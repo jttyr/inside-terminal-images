@@ -1,0 +1,31 @@
+name: Borrar imagenes al final del dia
+
+# Este repo es publico -- las imagenes solo deben vivir aqui mientras el
+# mercado esta activo. Cada noche se vacia la carpeta images/ por completo,
+# asi nunca queda un historial acumulado expuesto.
+on:
+  schedule:
+    # 06:00 UTC = 00:00 MX (igual que reset-marcador.yml en market-drivers)
+    - cron: "0 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  wipe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Vaciar images/
+        run: |
+          if [ -d images ] && [ "$(ls -A images 2>/dev/null)" ]; then
+            git rm -rq images/*
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -q -m "Borrado diario de imagenes $(date -u +%F)"
+            git push -q
+          else
+            echo "images/ ya estaba vacia, nada que borrar."
+          fi
