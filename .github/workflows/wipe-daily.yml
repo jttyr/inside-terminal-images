@@ -1,12 +1,13 @@
 name: Borrar imagenes al final del dia
 
-# Este repo es publico -- las imagenes solo deben vivir aqui mientras el
-# mercado esta activo. Cada noche se vacia la carpeta images/ por completo,
-# asi nunca queda un historial acumulado expuesto.
+# Este repo es publico, pero cada workflow ya SOBREESCRIBE el archivo de
+# cada ticker en cada corrida (nunca acumula historial) -- asi que borrar a
+# medianoche solo dejaba el dashboard autonomo (t0.insidetrades.app) en
+# blanco varias horas, hasta la primera publicacion del dia siguiente. Se
+# desactivo el cron por eso: ahora las imagenes se quedan como quedaron al
+# cierre y se reemplazan solas en la siguiente sesion. Se deja el disparo
+# manual por si algun dia se quiere vaciar a mano.
 on:
-  schedule:
-    # 06:00 UTC = 00:00 MX (igual que reset-marcador.yml en market-drivers)
-    - cron: "0 6 * * *"
   workflow_dispatch: {}
 
 permissions:
